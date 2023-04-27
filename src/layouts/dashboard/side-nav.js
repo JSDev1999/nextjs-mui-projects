@@ -68,7 +68,7 @@ export const SideNav = (props) => {
           >
             <div>
               <Typography color="inherit" variant="subtitle1">
-                Devias
+                Appointment Ally
               </Typography>
               {/* <Typography color="neutral.400" variant="body2">
                 Production
