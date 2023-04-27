@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { Box, Button, Link, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
 import { Layout as AuthLayout } from "src/layouts/auth/layout";
+import axiosClient from "src/utils/axiosClient";
 
 const Page = () => {
   const router = useRouter();
@@ -19,13 +20,22 @@ const Page = () => {
       submit: null,
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-      password: Yup.string().max(255).required("Password is required"),
+      email: Yup.string()
+        .trim()
+        .email("Must be a valid email")
+        .max(255)
+        .required("Email is required"),
+      password: Yup.string().trim().min(5).max(255).required("Password is required"),
     }),
     onSubmit: async (values, helpers) => {
       try {
-        await auth.signIn(values.email, values.password);
-        router.push("/");
+        const results = await axiosClient.post("/auth/login", {
+          email: values.email,
+          password: values.password,
+        });
+        console.log(results);
+        //  await auth.signIn(values.email, values.password);
+        // router.push("/");
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
