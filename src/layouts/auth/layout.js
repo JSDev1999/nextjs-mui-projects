@@ -78,7 +78,7 @@ export const Layout = (props) => {
             >
               Welcome to{" "}
               <Box component="a" sx={{ color: "#15B79E" }} target="_blank">
-                Appointments
+                Appointments Ally
               </Box>
             </Typography>
 
