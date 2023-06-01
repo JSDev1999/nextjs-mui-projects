@@ -4,14 +4,15 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Link, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
 import { Layout as AuthLayout } from "src/layouts/auth/layout";
 import axiosClient from "src/utils/axiosClient";
+import { useSnackbar } from "notistack";
 
 const Page = () => {
-  const router = useRouter();
   const auth = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
   const [method, setMethod] = useState("email");
   const formik = useFormik({
     initialValues: {
@@ -33,12 +34,15 @@ const Page = () => {
           email: values.email,
           password: values.password,
         });
-        console.log(results);
-        //  await auth.signIn(values.email, values.password);
-        // router.push("/");
+
+        if (results?.status == 200) {
+          enqueueSnackbar(results?.data?.message, { variant: "success" });
+          await auth.signIn(results.data);
+        }
       } catch (err) {
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        // helpers.setErrors({ submit: err.message });
+        enqueueSnackbar(err?.message, { variant: "error" });
         helpers.setSubmitting(false);
       }
     },
@@ -51,7 +55,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Login | Devias Kit</title>
+        <title>Login | Appointments</title>
       </Head>
       <Box
         sx={{
